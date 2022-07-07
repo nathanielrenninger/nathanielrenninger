@@ -2,12 +2,16 @@
 <!DOCTYPE html>
   <title>simplrspace</title>
 <head>
+  <script type="text/javascript"></script>
 <script src="https://app.smplrspace.com/lib/smplr.js"></script>
 <link href="https://app.smplrspace.com/lib/smplr.css" rel="stylesheet" />
 </head>
 
 <body>
+ 
 <h1>Simplr space</h1>
+ <div id="test">
+  </div>
 <script>
   const space = new smplr.Space({
     spaceId: 'a3a34437-b393-4666-8911-aaaad38926d0',
@@ -20,6 +24,7 @@
     onError: error => console.error('Could not start viewer', error)
   })
 </script>
+
 </body>
 </html>
 

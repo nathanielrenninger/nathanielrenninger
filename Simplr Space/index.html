@@ -1,0 +1,23 @@
+
+<head>
+<script src="https://app.smplrspace.com/lib/smplr.js"></script>
+<link href="https://app.smplrspace.com/lib/smplr.css" rel="stylesheet" />
+
+
+</head>
+<body>
+<h1>Hello World</h2>
+<script>
+  const space = new smplr.Space({
+    spaceId: 'a3a34437-b393-4666-8911-aaaad38926d0',
+    spaceToken: 'X',
+    containerId: 'test'
+  })
+  space.startViewer({
+    preview: true,
+    onReady: () => console.log('Viewer is ready'),
+    onError: error => console.error('Could not start viewer', error)
+  })
+</script>
+</body>
+

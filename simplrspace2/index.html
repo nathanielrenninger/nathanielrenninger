@@ -7,11 +7,11 @@
 
 <body>
 	<h1>Hello World!</h1>
-<script type="text/javascript">
+<script type='module'>
 
-   import React, { memo } from 'react'
-      import PropTypes from 'prop-types'
-      import useSmplrJs from './hooks/useSmplrJs'
+   import React, { memo } from '../react.development.js'
+      import PropTypes from '../prop-types.js'
+      import useSmplrJs from '../hooks/useSmplrJs'
 
   const Viewer = memo(({ mode, onReady, onModeChange }) => {
         useSmplrJs({ onLoad })
@@ -48,7 +48,7 @@
                 height: '100%',
                 backgroundColor: 'whitesmoke'
               }}
-            />
+            ></div>
           </div>
         )
       })

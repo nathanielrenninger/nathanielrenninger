@@ -13,7 +13,31 @@
 	<h1>Hello World!</h1>
  	<div id="smplr-container"></div>
 
+
+
 <script>
+////Index
+export const helloWorld = {
+  slug: 'hello-world',
+  title: 'Hello world',
+  description:
+    'A basic example showing how to integrate the viewer into your app.',
+  published: true,
+  code: [{ filename: 'HelloWorld.js', lang: 'jsx', content: HelloWorldCode }]
+}
+
+export default function () {
+  return (
+    <Project project={helloWorld}>
+      <HelloWorld />
+    </Project>
+  )
+}
+</script>
+
+
+<script>
+	//////HelloWorld.js///////////
 
 const HelloWorld = () => {
   useSmplrJs({ onLoad, dev: false })
@@ -56,6 +80,9 @@ const HelloWorld = () => {
     </div>
   )
 }
+</script>
+<script>
+	///////useSmplrJS.js/////////////
 
 import { useEffect, useRef } from 'react'
 
@@ -78,8 +105,184 @@ export default function useSmplrJs ({ onLoad, dev = false }) {
   }, [onLoad, smplrjsStatus])
 }
 
-
 export default HelloWorld
+</script>
+
+<script>
+	////////Project.js/////////
+
+function Project ({ project, children }) {
+  if (!project.published) {
+    return (
+      <Page title='Coming soon'>
+        <h1>Coming soon</h1>
+        <p>This project is not live yet, come again soon ;)</p>
+        <Button component='a' href='/examples'>
+          All examples
+        </Button>
+      </Page>
+    )
+  }
+
+  return (
+    <Page title={project.title}>
+      <h1>{project.title}</h1>
+      <p>{project.description}</p>
+      <Group>
+        <Button
+          size='sm'
+          component='a'
+          target='_blank'
+          rel='noopener noreferrer'
+          href={`https://github.com/smplrspace/docs/tree/main/src/pages/examples/${project.slug}`}
+          leftIcon={
+            <IoLogoGithub
+              style={{
+                width: 16,
+                height: 16
+              }}
+            />
+          }
+        >
+          Browse code
+        </Button>
+        <Button
+          size='sm'
+          component='a'
+          href='/examples'
+          leftIcon={
+            <IoReturnUpBack
+              style={{
+                width: 16,
+                height: 16
+              }}
+            />
+          }
+        >
+          All examples
+        </Button>
+      </Group>
+      <Divider my='lg' />
+      {children}
+      <Space h='lg' />
+      <Group align='baseline'>
+        <Tabs initialTab={1} style={{ width: 'calc(100% - 16px)' }}>
+          <Tab icon={<IoInformation />}>
+            <p>
+              Note that the example projects are implemented with React. For
+              vanilla Javascript, you would load the script and stylesheet like
+              any other in your HTML <code>{`<head>`}</code> and add a{' '}
+              <code>{`<script>`}</code> to the body that corresponds to the code
+              found in the <code>onLoad</code> function. Refer to the{' '}
+              <a href='/guides/embedding' color='blue'>
+                embedding spaces
+              </a>{' '}
+              guide for more details.
+            </p>
+            <p>
+              You should also pay attention to the various calls to{' '}
+              <code>space.___</code> which are how we build interactive
+              experiences on top of smplr.js. Note that <code>useEffect</code>{' '}
+              is just React's lingo for executing some code after some
+              application state has changed. <code>useState</code> and{' '}
+              <code>useReducer</code> are mechanisms to hold application state
+              in React.
+            </p>
+          </Tab>
+          {project.code.map(({ filename, lang, content }) => (
+            <Tab key={filename} label={filename}>
+              <CodeBlock className={`language-${lang}`}>{content}</CodeBlock>
+            </Tab>
+          ))}
+        </Tabs>
+      </Group>
+    </Page>
+  )
+}
+
+Project.propTypes = {
+  project: PropTypes.shape({
+    slug: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    published: PropTypes.bool,
+    code: PropTypes.arrayOf(
+      PropTypes.shape({
+        filename: PropTypes.string.isRequired,
+        lang: PropTypes.string.isRequired,
+        content: PropTypes.string.isRequired
+      })
+    )
+  }).isRequired,
+  children: PropTypes.any
+}
+
+export default Project
+</script>
+
+
+<script>
+///////////useScript.js/////////////
+
+import { useState, useEffect } from 'react'
+
+export default function useScript (src) {
+  // Keep track of script status ("idle", "loading", "ready", "error")
+  const [status, setStatus] = useState(src ? 'loading' : 'idle')
+  useEffect(
+    () => {
+      // Allow falsy src value if waiting on other data needed for
+      // constructing the script URL passed to this hook.
+      if (!src) {
+        setStatus('idle')
+        return
+      }
+      // Fetch existing script element by src
+      // It may have been added by another intance of this hook
+      let script = document.querySelector(`script[src="${src}"]`)
+      if (!script) {
+        // Create script
+        script = document.createElement('script')
+        script.src = src
+        script.async = true
+        script.setAttribute('data-status', 'loading')
+        // Add script to document body
+        document.body.appendChild(script)
+        // Store status in attribute on script
+        // This can be read by other instances of this hook
+        const setAttributeFromEvent = event => {
+          script.setAttribute(
+            'data-status',
+            event.type === 'load' ? 'ready' : 'error'
+          )
+        }
+        script.addEventListener('load', setAttributeFromEvent)
+        script.addEventListener('error', setAttributeFromEvent)
+      } else {
+        // Grab existing script status from attribute and set to state.
+        setStatus(script.getAttribute('data-status'))
+      }
+      // Script event handler to update status in state
+      // Note: Even if the script already exists we still need to add
+      // event handlers to update the state for *this* hook instance.
+      const setStateFromEvent = event => {
+        setStatus(event.type === 'load' ? 'ready' : 'error')
+      }
+      // Add event listeners
+      script.addEventListener('load', setStateFromEvent)
+      script.addEventListener('error', setStateFromEvent)
+      // Remove event listeners on cleanup
+      return () => {
+        if (script) {
+          script.removeEventListener('load', setStateFromEvent)
+          script.removeEventListener('error', setStateFromEvent)
+        }
+      }
+    },
+    [src] // Only re-run effect if script src changes
+  )
+  return status
+  ////
 </script>
  
 </body>

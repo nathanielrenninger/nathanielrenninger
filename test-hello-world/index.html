@@ -16,26 +16,5 @@
 <body>
 	<h1>Hello World!</h1>
   <div id="smplr-container"></div>
-
-<script>
-
-export const helloWorld = {
-  slug: 'hello-world',
-  title: 'Hello world',
-  description:
-    'A basic example showing how to integrate the viewer into your app.',
-  published: true,
-  code: [{ filename: 'HelloWorld.js', lang: 'jsx', content: HelloWorldCode }]
-}
-
-export default function () {
-  return (
-    <Project project={helloWorld}>
-      <HelloWorld />
-    </Project>
-  )
-}
-
-</script>
  
 </body>

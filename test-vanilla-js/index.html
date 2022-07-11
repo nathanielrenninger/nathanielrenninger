@@ -13,16 +13,17 @@
  <div id="test">
   </div>
 <script>
-  const space = new smplr.Space({
-    spaceId: 'a3a34437-b393-4666-8911-aaaad38926d0',
-    spaceToken: 'X',
-    containerId: 'test'
+  //start of smplrJS
+  const space = new smplr.Space({ // const is a variable indicator. The variable is called space. When space is called smplr.Space is created
+    spaceId: 'a3a34437-b393-4666-8911-aaaad38926d0', //unique to project
+    spaceToken: 'X', //placeholder
+    containerId: 'test' //change to whatever container you have
   })
-  space.startViewer({
-    preview: true,
-    onReady: () => console.log('Viewer is ready'),
+  space.startViewer({ //this function tells space to start
+    preview: true, // what is this?
+    onReady: () => console.log('Viewer is ready'), // logs to console
 
-    onError: error => console.error('Could not start viewer', error)
+    onError: error => console.error('Could not start viewer', error) // logs to console
   })
 
 
